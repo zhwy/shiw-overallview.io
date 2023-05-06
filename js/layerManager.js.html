@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>layerManager.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CesiumMap.html">CesiumMap</a><ul class='methods'><li data-type='method'><a href="CesiumMap.html#destroy">destroy</a></li><li data-type='method'><a href="CesiumMap.html#disablePositionPicking">disablePositionPicking</a></li><li data-type='method'><a href="CesiumMap.html#faceNorth">faceNorth</a></li><li data-type='method'><a href="CesiumMap.html#getCameraView">getCameraView</a></li><li data-type='method'><a href="CesiumMap.html#getHeight">getHeight</a></li><li data-type='method'><a href="CesiumMap.html#getPickPosition">getPickPosition</a></li><li data-type='method'><a href="CesiumMap.html#getWindowCenterPosition">getWindowCenterPosition</a></li><li data-type='method'><a href="CesiumMap.html#load3DTiles">load3DTiles</a></li><li data-type='method'><a href="CesiumMap.html#setBasemap">setBasemap</a></li><li data-type='method'><a href="CesiumMap.html#setBasemapParams">setBasemapParams</a></li><li data-type='method'><a href="CesiumMap.html#setGroundSkybox">setGroundSkybox</a></li><li data-type='method'><a href="CesiumMap.html#setSkyboxParams">setSkyboxParams</a></li><li data-type='method'><a href="CesiumMap.html#setTerrain">setTerrain</a></li><li data-type='method'><a href="CesiumMap.html#setUnderground">setUnderground</a></li><li data-type='method'><a href="CesiumMap.html#zoomTo">zoomTo</a></li></ul></li><li><a href="CesiumMap%25E5%259C%25B0%25E5%259B%25BE%25E7%25B1%25BB.html">CesiumMap地图类</a></li><li><a href="LayerManager.html">LayerManager</a><ul class='methods'><li data-type='method'><a href="LayerManager.html#addBillboardToLayer">addBillboardToLayer</a></li><li data-type='method'><a href="LayerManager.html#addLabelToLayer">addLabelToLayer</a></li><li data-type='method'><a href="LayerManager.html#addLayer">addLayer</a></li><li data-type='method'><a href="LayerManager.html#addModelLayer">addModelLayer</a></li><li data-type='method'><a href="LayerManager.html#addModelToLayer">addModelToLayer</a></li><li data-type='method'><a href="LayerManager.html#addVectorToLayer">addVectorToLayer</a></li><li data-type='method'><a href="LayerManager.html#destroy">destroy</a></li><li data-type='method'><a href="LayerManager.html#flickerItem">flickerItem</a></li><li data-type='method'><a href="LayerManager.html#getLayerVisible">getLayerVisible</a></li><li data-type='method'><a href="LayerManager.html#getTransformItem">getTransformItem</a></li><li data-type='method'><a href="LayerManager.html#playLayerLinkage">playLayerLinkage</a></li><li data-type='method'><a href="LayerManager.html#playSingleLinkage">playSingleLinkage</a></li><li data-type='method'><a href="LayerManager.html#playWaterFloodAnalysis">playWaterFloodAnalysis</a></li><li data-type='method'><a href="LayerManager.html#removeLayer">removeLayer</a></li><li data-type='method'><a href="LayerManager.html#setLayerVisibility">setLayerVisibility</a></li><li data-type='method'><a href="LayerManager.html#showLayer">showLayer</a></li><li data-type='method'><a href="LayerManager.html#stopFlyAndLinkage">stopFlyAndLinkage</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#BatchLayer">BatchLayer</a></li><li><a href="global.html#Default">Default</a></li><li><a href="global.html#FontType">FontType</a></li><li><a href="global.html#LayerType">LayerType</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">layerManager.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import DrawHelper from './drawHelper';
+import LayerFactory from './layerFactory';
+import Tool from './tool';
+import { LayerType } from './layerType';
+import LayerParamSetter from './layerParamSetter';
+import LayerZoom from './layerZoom';
+import ClippingHelper from './clippingHelper';
+import CzmlTrailHelper from './czmlTrailHelper';
+import TilesetHelper from './tilesetHelper';
+import FloodAnalysis from './floodAnalysis';
+import CesiumMap from './cesiumMap';
+
+/**
+ * 图层管理类
+ */
+class LayerManager {
+  /**
+   * 构造函数
+   * @param {CesiumMap} cesiummap 地图对象
+   */
+  constructor(cesiummap) {
+    /**
+     * 地图对象
+     * @type {CesiumMap}
+     */
+    this.cesiummap = cesiummap;
+    /**
+     * Cesium视角
+     * @type {czm-Viewer}
+     */
+    this.viewer = cesiummap.viewer;
+    /**
+     * viewer.entities
+     * @type {czm-EntityCollection}
+     */
+    this.entities = this.viewer.entities;
+    /**
+     * viewer.scene.primitives
+     * @type {czm-PrimitiveCollection}
+     */
+    this.primitives = this.viewer.scene.primitives;
+    /**
+     * viewer.scene.groundPrimitives 贴地物体集合
+     * @type {czm-GroundPrimitiveCollection}
+     */
+    this.groundPrimitives = this.viewer.scene.groundPrimitives;
+    /**
+     * 文字标签集合
+     * @type {czm-LabelCollection}
+     */
+    this.labels = new Cesium.LabelCollection({
+      scene: this.viewer.scene
+    });
+    /**
+     * 图片标签集合
+     * @type {czm-BillboardCollection}
+     */
+    this.billboards = new Cesium.BillboardCollection({
+      scene: this.viewer.scene
+    });
+
+    this.primitives.add(this.labels);
+    this.primitives.add(this.billboards);
+
+    /* {
+        type:类型,
+        label:文字标签,
+        billboard:图标,
+        model:模型,
+        water:水面,
+        outline:边界,
+        border:矢量数据,
+        batched:是否批量,
+        flowField:流场,
+        flowFieldOutline:流场边界,
+        remove:移除流场流动事件,
+        gifImages:gif流场解析出来的图片,
+        rectangle:数据范围,
+        clippingPlanes:地形裁剪,
+        tileset:切片,
+        track:轨迹
+      } */
+    this.layerDictionary = new Map();
+
+    this.layerVisibility = new Map(); // 存储图层可见性
+
+    this.drawHelper = new DrawHelper(this.cesiummap);
+    Tool.loadGif('/img/loading.gif').then(res => {
+      res.forEach(p => {
+        LayerFactory.LoadingImages.push(p);
+      });
+    });
+
+    this.canFlick = false; // 是否能闪烁
+
+    Object.assign(this, LayerParamSetter.prototype);
+    Object.assign(this, LayerZoom.prototype);
+    Object.assign(this, TilesetHelper.prototype);
+
+    this.clippingHelper = new ClippingHelper(this);
+
+    this.trackHelper = new CzmlTrailHelper(this, 1);
+  }
+
+  /**
+   * 添加一个图层
+   * 若图层check为0，图层和其子图层数据不会加载到场景中
+   * @param {Object} layerParam 图层参数，格式与接口返回的一致
+   */
+  addLayer(layerParam) {
+    const me = this;
+    const gifImages = [];
+    let label,
+      billboard,
+      border,
+      model,
+      outline,
+      rectangle,
+      flowField,
+      flowFieldOutline,
+      water,
+      clippingPlanes,
+      tileset;
+
+    const parentShow = this.getLayerVisible(layerParam.parentId);
+    let isBatch = false;
+    let borderBatch = false;
+    let result;
+
+    switch (layerParam.type) {
+      case LayerType.LabelCollection:
+        // 文字
+        isBatch = layerParam.layerText?.bacthText?.length > 1;
+        if (parentShow &amp;&amp; layerParam.check) label = LayerFactory.generateLabel(layerParam, this.labels);
+        this.layerDictionary.set(layerParam.id, {
+          label: label?.label,
+          type: layerParam.type,
+          batched: isBatch,
+          rectangle: label?.rectangle
+        });
+        break;
+      case LayerType.BillboardCollection:
+        // 标签
+        isBatch = layerParam.layerLabel?.bacthLabel?.bacthLabel?.length > 1;
+        if (parentShow &amp;&amp; layerParam.check) billboard = LayerFactory.generateBillboard(layerParam, this.billboards);
+        if (parentShow &amp;&amp; layerParam.check &amp;&amp; layerParam.isText &amp;&amp; layerParam.layerText) {
+          label = LayerFactory.generateLabel(layerParam, this.labels);
+        }
+
+        this.layerDictionary.set(layerParam.id, {
+          billboard: billboard?.billboard,
+          label: label?.label,
+          type: layerParam.type,
+          batched: isBatch,
+          rectangle: billboard?.rectangle
+        });
+        break;
+      case LayerType.VectorCollection:
+        // 矢量边界
+        /** 注意批量和单个边界区别
+         * 批量边界的border存放面primitive数据，outline存放线primitive数据
+         * 单个边界的border存放一个entity，同时包含面和线，分别在entity的polygon和polyline属性中
+         */
+        isBatch = layerParam.layerBorder?.batchCoordinate?.length > 0;
+        if (parentShow &amp;&amp; layerParam.check) {
+          if (isBatch) {
+            result = LayerFactory.generateBatchedBorder(
+              layerParam,
+              layerParam.layerBorder.isGround == 1 ? this.groundPrimitives : this.primitives
+            );
+            border = result.polygon;
+            outline = result.outline;
+            rectangle = result.rectangle;
+          } else {
+            border = LayerFactory.generateBorder(layerParam, this.entities);
+          }
+        }
+        if (parentShow &amp;&amp; layerParam.check &amp;&amp; layerParam.isText &amp;&amp; layerParam.layerText) {
+          label = LayerFactory.generateLabel(layerParam, this.labels);
+        }
+        if (parentShow &amp;&amp; layerParam.check &amp;&amp; layerParam.isLabel &amp;&amp; layerParam.layerLabel) {
+          billboard = LayerFactory.generateBillboard(layerParam, this.billboards);
+        }
+
+        this.layerDictionary.set(layerParam.id, {
+          border: border,
+          billboard: billboard?.billboard,
+          label: label?.label,
+          type: layerParam.type,
+          outline: outline,
+          rectangle: rectangle,
+          batched: isBatch
+        });
+        break;
+      case LayerType.ModelCollection:
+        // 模型
+        if (parentShow &amp;&amp; layerParam.check) {
+          model = LayerFactory.generateModelFromUrl(layerParam, parentShow, this.primitives, this.viewer.camera, false);
+        }
+        if (parentShow &amp;&amp; layerParam.check &amp;&amp; layerParam.isText &amp;&amp; layerParam.layerText) {
+          label = LayerFactory.generateLabel(layerParam, this.labels);
+        }
+        if (parentShow &amp;&amp; layerParam.check &amp;&amp; layerParam.isLabel &amp;&amp; layerParam.layerLabel) {
+          billboard = LayerFactory.generateBillboard(layerParam, this.billboards);
+        }
+        if (parentShow &amp;&amp; layerParam.check &amp;&amp; layerParam.isBorder &amp;&amp; layerParam.layerBorder) {
+          borderBatch = layerParam.layerBorder?.batchCoordinate?.length > 0;
+          if (borderBatch) {
+            result = LayerFactory.generateBatchedBorder(
+              layerParam,
+              layerParam.layerBorder.isGround == 1 ? this.groundPrimitives : this.primitives
+            );
+            border = result.polygon;
+            outline = result.outline;
+          } else {
+            border = LayerFactory.generateBorder(layerParam, this.entities);
+          }
+        }
+
+        this.layerDictionary.set(layerParam.id, {
+          model: model,
+          border: border,
+          billboard: billboard?.billboard,
+          label: label?.label,
+          type: layerParam.type,
+          outline: outline
+        });
+        break;
+      case LayerType.WaterCollection:
+        // 水面
+        isBatch = layerParam.layerWaterSurface?.batchCoordinate?.length > 0;
+        if (parentShow &amp;&amp; layerParam.check) {
+          result = LayerFactory.generateWater(
+            layerParam,
+            layerParam.layerWaterSurface?.isGround == 1 ? this.groundPrimitives : this.primitives
+          );
+          water = result.water;
+          outline = result.outline;
+        }
+        if (parentShow &amp;&amp; layerParam.check &amp;&amp; layerParam.isText &amp;&amp; layerParam.layerText) {
+          label = LayerFactory.generateLabel(layerParam, this.labels);
+        }
+        if (parentShow &amp;&amp; layerParam.check &amp;&amp; layerParam.isLabel &amp;&amp; layerParam.layerLabel) {
+          billboard = LayerFactory.generateBillboard(layerParam, this.billboards);
+        }
+
+        this.layerDictionary.set(layerParam.id, {
+          type: layerParam.type,
+          water: water,
+          billboard: billboard?.billboard,
+          label: label?.label,
+          outline: outline,
+          batched: isBatch
+        });
+        break;
+      case LayerType.FlowFieldCollection:
+        // 流场
+        this.layerDictionary.set(layerParam.id, {
+          flowField: flowField,
+          border: border,
+          billboard: billboard?.billboard,
+          label: label?.label,
+          type: layerParam.type,
+          remove: undefined,
+          flowFieldOutline: flowFieldOutline,
+          gifImages: gifImages,
+          outline: outline
+        });
+
+        if (parentShow &amp;&amp; layerParam.check) {
+          if (layerParam.layerFlow?.flowType == 0) {
+            // 将gif解析出来的帧存下来，更改流场参数后不需要再次解析
+            const getOrSetGifImages = res => {
+              if (res) {
+                gifImages.length = 0;
+                res.forEach(p => {
+                  gifImages.push(p);
+                });
+              }
+              return gifImages;
+            };
+            result = LayerFactory.generateFlowField(
+              layerParam,
+              layerParam.layerFlow.isGround == 1 ? this.groundPrimitives : this.primitives,
+              this.entities,
+              this.viewer.scene.preRender,
+              true,
+              true,
+              getOrSetGifImages
+            );
+            flowField = result.flowField;
+            flowFieldOutline = result.outline;
+          }
+        }
+        if (parentShow &amp;&amp; layerParam.check &amp;&amp; layerParam.isText &amp;&amp; layerParam.layerText) {
+          label = LayerFactory.generateLabel(layerParam, this.labels);
+        }
+        if (parentShow &amp;&amp; layerParam.check &amp;&amp; layerParam.isLabel &amp;&amp; layerParam.layerLabel) {
+          billboard = LayerFactory.generateBillboard(layerParam, this.billboards);
+        }
+        if (parentShow &amp;&amp; layerParam.check &amp;&amp; layerParam.isBorder &amp;&amp; layerParam.layerBorder) {
+          borderBatch = layerParam.layerBorder?.batchCoordinate?.length > 0;
+          if (borderBatch) {
+            result = LayerFactory.generateBatchedBorder(
+              layerParam,
+              layerParam.layerBorder.isGround == 1 ? this.groundPrimitives : this.primitives
+            );
+            border = result.polygon;
+            outline = result.outline;
+          } else {
+            border = LayerFactory.generateBorder(layerParam, this.entities);
+          }
+        }
+
+        const obj = this.layerDictionary.get(layerParam.id);
+        Object.assign(obj, {
+          flowField: flowField,
+          border: border,
+          billboard: billboard?.billboard,
+          label: label?.label,
+          type: layerParam.type,
+          remove: result ? result.remove : undefined,
+          flowFieldOutline: flowFieldOutline,
+          gifImages: gifImages,
+          outline: outline
+        });
+
+        break;
+      case LayerType.TerrainClippingCollection:
+        // 地形裁剪
+        isBatch = false;
+        if (parentShow &amp;&amp; layerParam.check) {
+          result = this.clippingHelper.addClippingPlaneCollection(layerParam);
+        }
+        if (parentShow &amp;&amp; layerParam.check &amp;&amp; layerParam.isText &amp;&amp; layerParam.layerText) {
+          label = LayerFactory.generateLabel(layerParam, this.labels);
+        }
+        if (parentShow &amp;&amp; layerParam.check &amp;&amp; layerParam.isLabel &amp;&amp; layerParam.layerLabel) {
+          billboard = LayerFactory.generateBillboard(layerParam, this.billboards);
+        }
+
+        this.layerDictionary.set(layerParam.id, {
+          clippingPlanes: result?.collection,
+          billboard: billboard?.billboard,
+          label: label?.label,
+          type: layerParam.type,
+          border: result?.border,
+          batched: isBatch,
+          rectangle: result?.rectangle
+        });
+        break;
+      case LayerType.TilesetCollection:
+        if (parentShow &amp;&amp; layerParam.check) {
+          const color = Cesium.Color.fromCssColorString(layerParam.layerTile?.color || 'white');
+          tileset = LayerFactory.generate3DTileset(layerParam, this.primitives, this.viewer.scene, (feature, res) => {
+            return me._setTileLayerColor(layerParam.name, feature, res, color);
+          });
+        }
+        if (parentShow &amp;&amp; layerParam.check &amp;&amp; layerParam.isText &amp;&amp; layerParam.layerText) {
+          label = LayerFactory.generateLabel(layerParam, this.labels);
+        }
+        if (parentShow &amp;&amp; layerParam.check &amp;&amp; layerParam.isLabel &amp;&amp; layerParam.layerLabel) {
+          billboard = LayerFactory.generateBillboard(layerParam, this.billboards);
+        }
+        if (parentShow &amp;&amp; layerParam.check &amp;&amp; layerParam.isBorder &amp;&amp; layerParam.layerBorder) {
+          borderBatch = layerParam.layerBorder?.batchCoordinate?.length > 0;
+          if (borderBatch) {
+            result = LayerFactory.generateBatchedBorder(
+              layerParam,
+              layerParam.layerBorder.isGround == 1 ? this.groundPrimitives : this.primitives
+            );
+            border = result.polygon;
+            outline = result.outline;
+          } else {
+            border = LayerFactory.generateBorder(layerParam, this.entities);
+          }
+        }
+
+        this.layerDictionary.set(layerParam.id, {
+          tileset: tileset,
+          type: layerParam.type,
+          border: border,
+          billboard: billboard?.billboard,
+          label: label?.label,
+          outline: outline
+        });
+        break;
+      case LayerType.TrackCollection:
+        if (parentShow &amp;&amp; layerParam.check) {
+          this.trackHelper.generateTrack(layerParam);
+        }
+        break;
+      case LayerType.TerrainEdittingCollection:
+        if (this.viewer.terrainProvider instanceof Cesium.TerrainProvider) {
+          LayerFactory.generateTerrainModifyTin(layerParam.layerTerrainEditting, this.viewer);
+        } else {
+          console.warn('地形修改数据被忽略');
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * 在已有图层中添加文字
+   * @param {Object} layerParam 图层参数
+   */
+  addLabelToLayer(layerParam) {
+    const parentShow = this.getLayerVisible(layerParam.parentId);
+    if (layerParam.type == LayerType.TrackCollection) {
+      this.trackHelper.addLabel(layerParam, parentShow);
+    } else {
+      const layer = this.layerDictionary.get(layerParam.id);
+      const label = LayerFactory.generateLabel(layerParam, this.labels, parentShow);
+      layer.label = label.label;
+    }
+  }
+
+  /**
+   * 在已有图层中添加图标
+   * @param {Object} layerParam 图层参数
+   */
+  addBillboardToLayer(layerParam) {
+    const parentShow = this.getLayerVisible(layerParam.parentId);
+    if (layerParam.type == LayerType.TrackCollection) {
+      this.trackHelper.addBillboard(layerParam, parentShow);
+    } else {
+      const layer = this.layerDictionary.get(layerParam.id);
+      const billboard = LayerFactory.generateBillboard(
+        layerParam,
+        this.billboards,
+        this.getLayerVisible(layerParam.parentId)
+      );
+      layer.billboard = billboard.billboard;
+    }
+  }
+
+  /**
+   * 在已有图层中添加边界
+   * @param {Object} layerParam 图层参数
+   */
+  addVectorToLayer(layerParam) {
+    const layer = this.layerDictionary.get(layerParam.id);
+    const border = LayerFactory.generateBorder(layerParam, this.entities, this.getLayerVisible(layerParam.parentId));
+    layer.border = border;
+  }
+
+  /**
+   * 在已有图层中添加模型
+   * @param {Object} layerParam 图层参数
+   * @param {Fill} [file=null] 模型文件，若有文件则使用文件，否则使用layerParam.url
+   * @param {Boolean} [ifZoom=true] 是否缩放到模型
+   * @param {Function} [success=()=>{}] 模型加载成功回调
+   */
+  addModelToLayer(layerParam, file = null, ifZoom = true, success = () => {}) {
+    const me = this;
+    const parentShow = this.getLayerVisible(layerParam.parentId);
+    if (layerParam.type == LayerType.TrackCollection) {
+      this.trackHelper.addModel(layerParam, parentShow, file);
+    } else {
+      const layer = this.layerDictionary.get(layerParam.id);
+      this.primitives.remove(layer.model);
+      layer.model = undefined;
+      if (file) {
+        LayerFactory.generateModelLocal(
+          layerParam,
+          parentShow,
+          file,
+          this.viewer.camera,
+          ifZoom,
+          model => {
+            layer.model = me.primitives.add(model);
+          },
+          success
+        );
+      } else {
+        LayerFactory.generateModelFromUrl(
+          layerParam,
+          parentShow,
+          this.primitives,
+          this.viewer.camera,
+          ifZoom,
+          model => {
+            layer.model = model;
+          }
+        );
+      }
+    }
+  }
+
+  /**
+   * 通过gltf文件添加模型图层，在批量操作中使用
+   * @param {Object} layerParam 图层参数
+   * @param {File} gltf 模型文件
+   * @param {Boolean} [ifZoom=false] 是否缩放到模型
+   */
+  addModelLayer(layerParam, gltf, ifZoom = false) {
+    const me = this;
+    const parentShow = this.getLayerVisible(layerParam.parentId);
+
+    LayerFactory.generateModelLocal(layerParam, parentShow, gltf, this.viewer.camera, ifZoom, model => {
+      me.primitives.add(model);
+      me.layerDictionary.set(layerParam.id, {
+        model: model,
+        type: LayerFactory.ModelCollection
+      });
+    });
+  }
+
+  /**
+   * 移除图层
+   * @param {Object} layerParam 图层参数
+   */
+  removeLayer(layerParam) {
+    const me = this;
+    if (layerParam.type == LayerType.LayerGroupCollection) {
+      this.layerVisibility.delete(layerParam.id);
+      layerParam.children.forEach(child => {
+        me.removeLayer(child);
+      });
+    } else {
+      this._removeSingleLayer(layerParam.id);
+    }
+  }
+
+  /**
+   * 设置图层是否显示
+   * @param {Object} layerParam 图层参数
+   */
+  showLayer(layerParam, parentShow = undefined) {
+    const me = this;
+    if (parentShow == undefined) parentShow = this.getLayerVisible(layerParam.parentId);
+    if (layerParam.type == LayerType.LayerGroupCollection) {
+      this.setLayerVisibility(layerParam.id, layerParam.check &amp;&amp; parentShow);
+      layerParam.children.forEach(child => {
+        me.showLayer(child, layerParam.check &amp;&amp; parentShow);
+      });
+    } else {
+      this._showSingleLayer(layerParam);
+    }
+  }
+
+  /**
+   * 播放单个联动
+   * @param {LayerType} itemType 图层类型
+   * @param {Object} params 联动参数
+   */
+  playSingleLinkage(itemType, params) {
+    const me = this;
+    if (itemType == LayerType.TrackCollection) {
+      // 轨迹图层，把时钟调整至轨迹时间
+      this.trackHelper.zoomToClock(params.layerId);
+    }
+    if (itemType == LayerType.WaterCollection &amp;&amp; params.floodAnalysisCheck) {
+      this.playWaterFloodAnalysis(params); // 播放淹没
+    }
+
+    if (params &amp;&amp; params.count != 0) {
+      setTimeout(() => {
+        me.flickerItem({
+          layerid: params.layerId,
+          itemType: itemType,
+          params: params
+        });
+      }, params.flashStart * 1000);
+    }
+  }
+
+  /**
+   * 播放图层联动
+   * @param {Object} layerData 图层数据
+   */
+  playLayerLinkage(layerData) {
+    if (!layerData.check) return;
+    if (layerData.type == LayerType.LabelCollection || layerData.isText) {
+      this.playSingleLinkage(LayerType.LabelCollection, layerData.layerText);
+    }
+    if (layerData.type == LayerType.BillboardCollection || layerData.isLabel) {
+      this.playSingleLinkage(LayerType.BillboardCollection, layerData.layerLabel);
+    }
+    if (layerData.type == LayerType.VectorCollection || layerData.isBorder) {
+      this.playSingleLinkage(LayerType.VectorCollection, layerData.layerBorder);
+    }
+    if (layerData.type == LayerType.ModelCollection) {
+      this.playSingleLinkage(LayerType.ModelCollection, layerData.layerModel);
+    }
+    if (layerData.type == LayerType.WaterCollection) {
+      this.playSingleLinkage(LayerType.WaterCollection, layerData.layerWaterSurface);
+    }
+    if (layerData.type == LayerType.FlowFieldCollection) {
+      this.playSingleLinkage(LayerType.FlowFieldCollection, layerData.layerFlow);
+    }
+    if (layerData.type == LayerType.TilesetCollection) {
+      this.playSingleLinkage(LayerType.TilesetCollection, layerData.layerTile);
+    }
+    if (layerData.type == LayerType.TrackCollection) {
+      this.playSingleLinkage(LayerType.TrackCollection, layerData.layerTrack);
+    }
+  }
+
+  /**
+   * 闪烁物体
+   * @param {Object} param 参数
+   * @param {String} param.layerid 图层id
+   * @param {LayerType} param.itemType 图层类型
+   * @param {Object} param.params 联动参数
+   * @param {Function} [param.success=()=>{}] 闪烁结束回调
+   */
+  flickerItem({ layerid, itemType, params, success = () => {} }) {
+    const layer = this.layerDictionary.get(layerid);
+    const me = this;
+    const interval = (params.duration * 1000) / params.count;
+    let count = 0;
+    if (layer &amp;&amp; this.canFlick) {
+      const flicker = () => {
+        if (count &lt; params.count) {
+          LayerManager._showItem(itemType, layer, !params.isLight, params);
+          setTimeout(() => {
+            LayerManager._showItem(itemType, layer, !!params.isLight, params);
+            count += 1;
+            if (me.canFlick) {
+              setTimeout(() => {
+                flicker();
+              }, interval / 2);
+            }
+          }, interval / 2);
+        } else {
+          // me.silhouette.enabled = false;
+          success();
+        }
+      };
+      flicker();
+    }
+  }
+
+  /**
+   * 播放淹没
+   * @param {Object} params layerWater参数
+   * @param {Function} [onEnd=()=>{}] 淹没结束回调
+   * @returns {FloodAnalysis} 淹没分析对象
+   */
+  playWaterFloodAnalysis(params, onEnd = () => {}) {
+    const water = this.layerDictionary.get(params.layerId)?.water;
+    const oldVisibility = water.show;
+    water.show = false;
+
+    return new FloodAnalysis(params, this.viewer, () => {
+      water.show = oldVisibility;
+      onEnd();
+    });
+  }
+
+  /**
+   * 停止飞行与联动
+   */
+  stopFlyAndLinkage() {
+    this.viewer.camera.cancelFlight();
+    this.canFlick = false;
+  }
+
+  /**
+   * 设置图层可见性
+   * @param {String} layerid 图层id
+   * @param {Boolean} visible 是否可见
+   */
+  setLayerVisibility(layerid, visible) {
+    this.layerVisibility.set(layerid, visible);
+  }
+
+  /**
+   * 获取图层可见性
+   * @param {String} layerid 图层id
+   * @returns {Boolean} 是否可见
+   */
+  getLayerVisible(layerid) {
+    const visible = this.layerVisibility.get(layerid);
+    if (visible == undefined) return true;
+    return visible;
+  }
+
+  /**
+   * 获取编辑位置物体
+   * @param {*} layerid 图层id
+   * @param {LayerType} type 图层类型
+   * @returns {*} 物体
+   */
+  getTransformItem(layerid, type) {
+    const layer = this.layerDictionary.get(layerid);
+    if (layer) {
+      switch (type) {
+        case LayerType.BillboardCollection:
+          return layer.billboard;
+        case LayerType.LabelCollection:
+          return layer.label;
+        case LayerType.ModelCollection:
+          return layer.model;
+        case LayerType.TilesetCollection:
+          layer.tileset._root.modelMatrix = layer.tileset._root.transform;
+          return layer.tileset._root;
+        default:
+          return undefined;
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * 销毁
+   */
+  destroy() {
+    this.viewer.scene.primitives.remove(this.labels);
+    this.viewer.scene.primitives.remove(this.billboards);
+
+    this.cesiummap.layerManager = undefined;
+
+    this.drawHelper.destroy();
+    this.drawHelper = undefined;
+
+    this.cesiummap = undefined;
+    this.viewer = undefined;
+    this.labels = undefined;
+    this.entities = undefined;
+    this.primitives = undefined;
+    this.layerDictionary.clear();
+    this.layerDictionary = undefined;
+  }
+
+  /**
+   * 控制图层中某类物体显示隐藏
+   * @param {LayerType} itemType
+   * @param {Object} layer 图层参数
+   * @param {Boolean} ifShow 是否显示
+   * @private
+   */
+  static _showItem(itemType, layer, ifShow, params) {
+    if (layer.type == LayerType.TrackCollection) {
+      const entity = layer.track;
+      if (entity) {
+        switch (itemType) {
+          case LayerType.LabelCollection:
+            if (entity.label) entity.label.show = ifShow;
+            break;
+          case LayerType.BillboardCollection:
+            if (entity.billboard) entity.billboard.show = ifShow;
+            break;
+          case LayerType.ModelCollection:
+            if (entity.model) entity.model.show = ifShow;
+            break;
+          case LayerType.TrackCollection:
+            if (params.isTrail) {
+              if (entity.path) entity.path.show = ifShow;
+            } else if (entity.polyline) {
+              entity.polyline.show = ifShow;
+            }
+            break;
+          default:
+            break;
+        }
+      }
+    } else {
+      switch (itemType) {
+        case LayerType.LabelCollection:
+          if (layer.label) {
+            if (Array.isArray(layer.label)) {
+              layer.label.forEach(p => {
+                p.show = ifShow;
+              });
+            } else layer.label.show = ifShow;
+          }
+          break;
+        case LayerType.BillboardCollection:
+          if (layer.billboard) {
+            if (Array.isArray(layer.billboard)) {
+              layer.billboard.forEach(p => {
+                p.show = ifShow;
+              });
+            } else layer.billboard.show = ifShow;
+          }
+          break;
+        case LayerType.VectorCollection:
+          if (layer.border) layer.border.show = ifShow;
+          if (layer.outline) layer.outline.show = ifShow;
+          break;
+        case LayerType.ModelCollection:
+          if (layer.model) layer.model.show = ifShow;
+          break;
+        case LayerType.WaterCollection:
+          if (layer.water) layer.water.show = ifShow;
+          if (layer.outline) layer.outline.show = ifShow;
+          break;
+        case LayerType.FlowFieldCollection:
+          if (layer.flowField) layer.flowField.show = ifShow;
+          if (layer.flowFieldOutline) layer.flowFieldOutline.show = ifShow;
+          break;
+        case LayerType.TilesetCollection:
+          if (layer.tileset) layer.tileset.show = ifShow;
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  /**
+   * 移除一个图层
+   * @param {String} layerid 图层id
+   * @private
+   */
+  _removeSingleLayer(layerid) {
+    let layer = this.layerDictionary.get(layerid);
+    if (layer) {
+      const destroy = p => {
+        if (typeof p.isDestroyed === 'function') {
+          if (!p.isDestroyed()) {
+            p.destroy();
+          }
+        }
+      };
+
+      if (layer.model) {
+        this.primitives.remove(layer.model);
+        destroy(layer.model);
+      }
+      layer.model = undefined;
+
+      if (layer.label) {
+        if (Array.isArray(layer.label)) {
+          layer.label.forEach(p => {
+            this.labels.remove(p);
+          });
+        } else {
+          this.labels.remove(layer.label);
+        }
+      }
+      layer.label = undefined;
+
+      if (layer.billboard) {
+        if (Array.isArray(layer.billboard)) {
+          layer.billboard.forEach(p => {
+            this.billboards.remove(p);
+          });
+        } else {
+          this.billboards.remove(layer.billboard);
+        }
+      }
+      layer.billboard = undefined;
+
+      if (layer.border) {
+        this.primitives.remove(layer.border);
+        this.groundPrimitives.remove(layer.border);
+        this.entities.remove(layer.border);
+        destroy(layer.border);
+      }
+      layer.border = undefined;
+
+      if (layer.outline) {
+        this.primitives.remove(layer.outline);
+        this.groundPrimitives.remove(layer.outline);
+        this.entities.remove(layer.outline);
+        destroy(layer.outline);
+      }
+      layer.outline = undefined;
+
+      if (layer.flowFieldOutline) {
+        this.entities.remove(layer.flowFieldOutline);
+        destroy(layer.flowFieldOutline);
+      }
+      layer.flowFieldOutline = undefined;
+
+      if (layer.water) {
+        this.primitives.remove(layer.water);
+        this.groundPrimitives.remove(layer.water);
+        destroy(layer.water);
+      }
+      layer.water = undefined;
+
+      if (layer.flowField) {
+        this.primitives.remove(layer.flowField);
+        this.groundPrimitives.remove(layer.flowField);
+        this.entities.remove(layer.outline);
+        destroy(layer.flowField);
+        if (typeof layer.remove == 'function') layer.remove();
+        layer.gifImages.length = 0;
+        layer.gifImages = undefined;
+      }
+      layer.flowField = undefined;
+
+      if (layer.clippingPlanes) {
+        this.clippingHelper.removeClippingPlaneCollection(layer.clippingPlanes);
+      }
+      layer.clippingPlanes = undefined;
+
+      if (layer.tileset) {
+        this.primitives.remove(layer.tileset);
+        destroy(layer.tileset);
+      }
+      layer.tileset = undefined;
+
+      if (layer.type === LayerType.TrackCollection) {
+        this.trackHelper.removeTrack(layerid);
+        layer.track = undefined;
+      }
+
+      this.layerDictionary.delete(layerid);
+      layer = undefined;
+    }
+  }
+
+  /**
+   * 设置单个图层是否显示
+   * @param {Object} layerParam 图层参数
+   * @private
+   */
+  _showSingleLayer(layerParam) {
+    const layer = this.layerDictionary.get(layerParam.id);
+    let result;
+    const parentShow = this.getLayerVisible(layerParam.parentId);
+    if (layer) {
+      if (!parentShow || !layerParam.check) {
+        // 整体隐藏
+        Object.keys(layer).forEach(name => {
+          if (name != 'gifImages' &amp;&amp; Array.isArray(layer[name])) {
+            layer[name].forEach(p => {
+              p.show = false;
+            });
+          } else if (name === 'clippingPlanes') {
+            // 地形裁剪目前只能直接移除
+            this.clippingHelper.removeClippingPlaneCollection(layer.clippingPlanes);
+            layer.clippingPlanes = undefined;
+          } else if (typeof layer[name] == 'object' &amp;&amp; layer[name]) {
+            layer[name].show = false;
+          }
+        });
+      } else {
+        // 可见，判断包含物是否可见
+        // 文字
+        if ((layer.type == LayerType.LabelCollection || layerParam.isText) &amp;&amp; !layer.label) {
+          const label = LayerFactory.generateLabel(layerParam, this.labels);
+          layer.label = label.label;
+          if (layer.type == LayerType.LabelCollection) {
+            // 生成矩形用于定位
+            layer.rectangle = label.rectangle;
+          }
+        } else if ((layer.type == LayerType.LabelCollection || layerParam.isText) &amp;&amp; layer.label) {
+          if (Array.isArray(layer.label)) {
+            layer.label.forEach(p => {
+              p.show = true &amp;&amp; layerParam.layerText.isLight == 1;
+            });
+          } else layer.label.show = true &amp;&amp; layerParam.layerText.isLight == 1;
+        } else if (layer.label) {
+          if (Array.isArray(layer.label)) {
+            layer.label.forEach(p => {
+              p.show = false;
+            });
+          } else layer.label.show = false;
+        }
+        // 标签
+        if ((layer.type == LayerType.BillboardCollection || layerParam.isLabel) &amp;&amp; !layer.billboard) {
+          const billboard = LayerFactory.generateBillboard(layerParam, this.billboards);
+          layer.billboard = billboard.billboard;
+          if (layer.type == LayerType.BillboardCollection) {
+            layer.rectangle = billboard.rectangle;
+          }
+        } else if ((layer.type == LayerType.BillboardCollection || layerParam.isLabel) &amp;&amp; layer.billboard) {
+          if (Array.isArray(layer.billboard)) {
+            layer.billboard.forEach(p => {
+              p.show = true &amp;&amp; layerParam.layerLabel.isLight == 1;
+            });
+          } else layer.billboard.show = true &amp;&amp; layerParam.layerLabel.isLight == 1;
+        } else if (layer.billboard) {
+          if (Array.isArray(layer.billboard)) {
+            layer.billboard.forEach(p => {
+              p.show = false;
+            });
+          } else layer.billboard.show = false;
+        }
+        // 边界
+        const batchBorder = layerParam.layerBorder?.batchCoordinate?.length > 0;
+        if ((layer.type == LayerType.VectorCollection || layerParam.isBorder) &amp;&amp; !layer.border &amp;&amp; !batchBorder) {
+          layer.border = LayerFactory.generateBorder(layerParam, this.entities);
+        } else if ((layer.type == LayerType.VectorCollection || layerParam.isBorder) &amp;&amp; layer.border &amp;&amp; !batchBorder) {
+          layer.border.show = true &amp;&amp; layerParam.layerBorder.isLight == 1;
+        } else if (layer.border &amp;&amp; !batchBorder) {
+          layer.border.show = false;
+        }
+        // 批量边界，用边界outline判断几何是否已初始化
+        if ((layer.type == LayerType.VectorCollection || layerParam.isBorder) &amp;&amp; !layer.outline &amp;&amp; batchBorder) {
+          result = LayerFactory.generateBatchedBorder(
+            layerParam,
+            layerParam.layerBorder.isGround == 1 ? this.groundPrimitives : this.primitives
+          );
+          layer.border = result.polygon;
+          layer.outline = result.outline;
+          layer.rectangle = result.rectangle;
+        } else if ((layer.type == LayerType.VectorCollection || layerParam.isBorder) &amp;&amp; layer.outline &amp;&amp; batchBorder) {
+          if (layer.border) layer.border.show = true &amp;&amp; layerParam.layerBorder.isLight == 1;
+          layer.outline.show = true &amp;&amp; layerParam.layerBorder.isLight == 1;
+        } else if (layer.outline &amp;&amp; batchBorder) {
+          if (layer.border) layer.border.show = false;
+          layer.outline.show = false;
+        }
+        // 模型
+        if (layer.type == LayerType.ModelCollection &amp;&amp; !layer.model) {
+          this.addModelToLayer(layerParam, null, false);
+        } else if (layer.type == LayerType.ModelCollection &amp;&amp; layer.model) {
+          layer.model.show = true &amp;&amp; layerParam.layerModel.isLight == 1;
+        } else if (layer.model) {
+          layer.model.show = false;
+        }
+        // 水面
+        if (layer.type == LayerType.WaterCollection &amp;&amp; !layer.water) {
+          result = LayerFactory.generateWater(
+            layerParam,
+            layerParam.layerWaterSurface?.isGround == 1 ? this.groundPrimitives : this.primitives
+          );
+          layer.water = result.water;
+          layer.outline = result.outline;
+        } else if (layer.type == LayerType.WaterCollection &amp;&amp; layer.water) {
+          layer.water.show = true &amp;&amp; layerParam.layerWaterSurface.isLight == 1;
+          if (layer.outline) layer.outline.show = layer.water.show;
+        } else if (layer.water) {
+          layer.water.show = false;
+          if (layer.outline) layer.outline.show = false;
+        }
+        // 流场
+        if (layer.type == LayerType.FlowFieldCollection &amp;&amp; !layer.flowField) {
+          if (layerParam.layerFlow.flowType == 0) {
+            const gifImages = [];
+            const getOrSetGifImages = res => {
+              if (res) {
+                gifImages.length = 0;
+                res.forEach(p => {
+                  gifImages.push(p);
+                });
+              }
+              return gifImages;
+            };
+            result = LayerFactory.generateFlowField(
+              layerParam,
+              layerParam.layerFlow.isGround == 1 ? this.groundPrimitives : this.primitives,
+              this.entities,
+              this.viewer.scene.preRender,
+              true,
+              true,
+              getOrSetGifImages
+            );
+            layer.flowField = result.flowField;
+            layer.flowFieldOutline = result.outline;
+            layer.gifImages = gifImages;
+          }
+        } else if (layer.type == LayerType.FlowFieldCollection &amp;&amp; layer.flowField) {
+          layer.flowField.show = true &amp;&amp; layerParam.layerFlow.isLight == 1;
+          if (layer.flowFieldOutline) layer.flowFieldOutline.show = true &amp;&amp; layerParam.layerFlow.isLight == 1;
+        } else if (layer.flowField) {
+          layer.flowField.show = false;
+          if (layer.outline) layer.outline.show = false;
+        }
+        // 三维切片
+        if (layer.type == LayerType.TilesetCollection &amp;&amp; !layer.tileset) {
+          this.reloadTileset(layerParam);
+        } else if (layer.type == LayerType.TilesetCollection &amp;&amp; layer.tileset) {
+          layer.tileset.show = true &amp;&amp; layerParam.layerTile.isLight == 1;
+        } else if (layer.tileset) {
+          layer.tileset.show = false;
+        }
+        // 轨迹
+        if (layer.type == LayerType.TrackCollection) {
+          this.trackHelper.showTrackLayer(layerParam);
+        }
+        // 地形裁剪
+        if (layer.type == LayerType.TerrainClippingCollection &amp;&amp; !layer.clippingPlanes) {
+          result = this.clippingHelper.addClippingPlaneCollection(layerParam, layer.rectangle === undefined);
+          layer.clippingPlanes = result.collection;
+          if (!layer.rectangle) {
+            delete result.collection;
+            Object.assign(layer, result);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * 设置tiles颜色
+   * @param {String} layerName 图层名称
+   * @param {czm-Cesium3DTileFeature} feature Cesium3DTileFeature要素
+   * @param {czm-Color} result 最终的颜色
+   * @param {czm-Color} color 默认颜色，白色
+   * @private
+   */
+  _setTileLayerColor(layerName, feature, result, color = Cesium.Color.WHITE) {
+    if (
+      this.cesiummap.tool.selectedTile &amp;&amp;
+      feature &amp;&amp;
+      feature.getProperty('name') === this.cesiummap.tool.selectedTile.getProperty('name')
+    ) {
+      return Cesium.Color.clone(new Cesium.Color(0.5, 0, 0, 0.9), result);
+    }
+    return Cesium.Color.clone(color, result);
+  }
+}
+export default LayerManager;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat May 06 2023 11:13:35 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

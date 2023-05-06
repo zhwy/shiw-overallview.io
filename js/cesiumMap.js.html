@@ -29,7 +29,7 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CesiumMap.html">CesiumMap</a><ul class='methods'><li data-type='method'><a href="CesiumMap.html#disablePositionPicking">disablePositionPicking</a></li><li data-type='method'><a href="CesiumMap.html#faceNorth">faceNorth</a></li><li data-type='method'><a href="CesiumMap.html#getCameraView">getCameraView</a></li><li data-type='method'><a href="CesiumMap.html#getHeight">getHeight</a></li><li data-type='method'><a href="CesiumMap.html#getPickPosition">getPickPosition</a></li><li data-type='method'><a href="CesiumMap.html#getWindowCenterPosition">getWindowCenterPosition</a></li><li data-type='method'><a href="CesiumMap.html#load3DTiles">load3DTiles</a></li><li data-type='method'><a href="CesiumMap.html#setBasemap">setBasemap</a></li><li data-type='method'><a href="CesiumMap.html#setBasemapParams">setBasemapParams</a></li><li data-type='method'><a href="CesiumMap.html#setGroundSkybox">setGroundSkybox</a></li><li data-type='method'><a href="CesiumMap.html#setSkyboxParams">setSkyboxParams</a></li><li data-type='method'><a href="CesiumMap.html#setTerrain">setTerrain</a></li><li data-type='method'><a href="CesiumMap.html#setUnderground">setUnderground</a></li><li data-type='method'><a href="CesiumMap.html#zoomTo">zoomTo</a></li></ul></li><li><a href="CesiumMap%25E5%259C%25B0%25E5%259B%25BE%25E7%25B1%25BB.html">CesiumMap地图类</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CesiumMap.html">CesiumMap</a><ul class='methods'><li data-type='method'><a href="CesiumMap.html#destroy">destroy</a></li><li data-type='method'><a href="CesiumMap.html#disablePositionPicking">disablePositionPicking</a></li><li data-type='method'><a href="CesiumMap.html#faceNorth">faceNorth</a></li><li data-type='method'><a href="CesiumMap.html#getCameraView">getCameraView</a></li><li data-type='method'><a href="CesiumMap.html#getHeight">getHeight</a></li><li data-type='method'><a href="CesiumMap.html#getPickPosition">getPickPosition</a></li><li data-type='method'><a href="CesiumMap.html#getWindowCenterPosition">getWindowCenterPosition</a></li><li data-type='method'><a href="CesiumMap.html#load3DTiles">load3DTiles</a></li><li data-type='method'><a href="CesiumMap.html#setBasemap">setBasemap</a></li><li data-type='method'><a href="CesiumMap.html#setBasemapParams">setBasemapParams</a></li><li data-type='method'><a href="CesiumMap.html#setGroundSkybox">setGroundSkybox</a></li><li data-type='method'><a href="CesiumMap.html#setSkyboxParams">setSkyboxParams</a></li><li data-type='method'><a href="CesiumMap.html#setTerrain">setTerrain</a></li><li data-type='method'><a href="CesiumMap.html#setUnderground">setUnderground</a></li><li data-type='method'><a href="CesiumMap.html#zoomTo">zoomTo</a></li></ul></li><li><a href="CesiumMap%25E5%259C%25B0%25E5%259B%25BE%25E7%25B1%25BB.html">CesiumMap地图类</a></li><li><a href="LayerManager.html">LayerManager</a><ul class='methods'><li data-type='method'><a href="LayerManager.html#addBillboardToLayer">addBillboardToLayer</a></li><li data-type='method'><a href="LayerManager.html#addLabelToLayer">addLabelToLayer</a></li><li data-type='method'><a href="LayerManager.html#addLayer">addLayer</a></li><li data-type='method'><a href="LayerManager.html#addModelLayer">addModelLayer</a></li><li data-type='method'><a href="LayerManager.html#addModelToLayer">addModelToLayer</a></li><li data-type='method'><a href="LayerManager.html#addVectorToLayer">addVectorToLayer</a></li><li data-type='method'><a href="LayerManager.html#destroy">destroy</a></li><li data-type='method'><a href="LayerManager.html#flickerItem">flickerItem</a></li><li data-type='method'><a href="LayerManager.html#getLayerVisible">getLayerVisible</a></li><li data-type='method'><a href="LayerManager.html#getTransformItem">getTransformItem</a></li><li data-type='method'><a href="LayerManager.html#playLayerLinkage">playLayerLinkage</a></li><li data-type='method'><a href="LayerManager.html#playSingleLinkage">playSingleLinkage</a></li><li data-type='method'><a href="LayerManager.html#playWaterFloodAnalysis">playWaterFloodAnalysis</a></li><li data-type='method'><a href="LayerManager.html#removeLayer">removeLayer</a></li><li data-type='method'><a href="LayerManager.html#setLayerVisibility">setLayerVisibility</a></li><li data-type='method'><a href="LayerManager.html#showLayer">showLayer</a></li><li data-type='method'><a href="LayerManager.html#stopFlyAndLinkage">stopFlyAndLinkage</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#BatchLayer">BatchLayer</a></li><li><a href="global.html#Default">Default</a></li><li><a href="global.html#FontType">FontType</a></li><li><a href="global.html#LayerType">LayerType</a></li></ul>
     
 </nav>
 
@@ -45,8 +45,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/* eslint-disable */
-import CzmlTrailHelper from './czmlTrailHelper';
+            <pre class="prettyprint source linenums"><code>import CzmlTrailHelper from './czmlTrailHelper';
 import CesiumEvtHelper from './cesiumEvtHelper';
 import P from './parameters';
 import Tool from './tool';
@@ -111,7 +110,7 @@ class CesiumMap {
 
     this.indexDb = indexDb;
 
-    Cesium.GeoJsonDataSource.clampToGround = true; //贴地
+    Cesium.GeoJsonDataSource.clampToGround = true; // 贴地
 
     /**
      * 手动添加的水面对象，通过_cesiummap.tool.addWaterSurface创建，可以是集合
@@ -141,7 +140,6 @@ class CesiumMap {
       fullscreenButton: false,
       homeButton: false,
       geocoder: false,
-      selectionIndicator: false,
       navigationInstructionsInitiallyVisible: false,
       navigationHelpButton: false,
       baseLayerPicker: false,
@@ -151,7 +149,7 @@ class CesiumMap {
     const skybox = Tool.generateSkybox(P.defaultSkyBox);
     if (skybox) options.nearGroundSkyBox = skybox;
 
-    //地形
+    // 地形
     options.terrainProvider = this.setTerrain(P.terrain);
 
     changeViewerOptsFunc(options);
@@ -266,6 +264,7 @@ class CesiumMap {
     }, 500);
     this.CesiumPopup = CesiumPopup;
   }
+
   /**
    * 加载3dtiles
    * @deprecated
@@ -285,29 +284,30 @@ class CesiumMap {
         skipLevelOfDetail: true
       })
     );
-    let tileset = this.realModel;
+    const tileset = this.realModel;
     this.realModel.readyPromise.then(() => {
-      //改变高度
-      let cartographic = Cesium.Cartographic.fromCartesian(tileset.boundingSphere.center);
-      let surface = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0.0);
-      let offset = Cesium.Cartesian3.fromRadians(
+      // 改变高度
+      const cartographic = Cesium.Cartographic.fromCartesian(tileset.boundingSphere.center);
+      const surface = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0.0);
+      const offset = Cesium.Cartesian3.fromRadians(
         cartographic.longitude + deltax,
         cartographic.latitude + deltay,
         deltah
       );
-      let translation = Cesium.Cartesian3.subtract(offset, surface, new Cesium.Cartesian3());
+      const translation = Cesium.Cartesian3.subtract(offset, surface, new Cesium.Cartesian3());
       tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
       this.viewer.zoomTo(tileset);
     });
   }
+
   /**
-   * 获取相机视角参数
+   * 获取相机当前视角参数
    * @return {Object} {lon:Number,lat:Number,alt:Number,heading:Number,pitch:Number,roll:Number} 视角参数
    */
   getCameraView() {
-    let viewer = this.viewer;
-    let cameraCart = viewer.camera.positionCartographic;
-    if (Cesium.defined(viewer.camera.roll))
+    const viewer = this.viewer;
+    const cameraCart = viewer.camera.positionCartographic;
+    if (Cesium.defined(viewer.camera.roll)) {
       return {
         lon: Math.round(Cesium.Math.toDegrees(cameraCart.longitude) * 10e5) / 10e5,
         lat: Math.round(Cesium.Math.toDegrees(cameraCart.latitude) * 10e5) / 10e5,
@@ -316,7 +316,11 @@ class CesiumMap {
         pitch: Math.round(Cesium.Math.toDegrees(viewer.camera.pitch) * 10) / 10,
         roll: Math.round(Cesium.Math.toDegrees(viewer.camera.roll) * 10) / 10
       };
+    }
+
+    return undefined;
   }
+
   /**
    * 获取屏幕中点坐标
    * @returns {Object} {lon:Number,lat:Number,alt:Number} 屏幕中点坐标
@@ -327,19 +331,20 @@ class CesiumMap {
 
     height = Number(height.slice(0, -2)) / 2;
     width = Number(width.slice(0, -2)) / 2;
-    let cartesian = undefined,
+    let cartesian,
       count = 0;
     cartesian = this.viewer.scene.pickPosition(new Cesium.Cartesian2(width, height));
     while (!cartesian &amp;&amp; count &lt; 10) {
       height *= 1.5;
-      count++;
+      count += 1;
       cartesian = this.viewer.scene.pickPosition(new Cesium.Cartesian2(width, height));
     }
     if (!cartesian) {
       cartesian = P.defaultView.destination;
     }
-    let carto = Cesium.Cartographic.fromCartesian(cartesian);
-    let alt = this.viewer.scene.globe.getHeight(carto);
+
+    const carto = Cesium.Cartographic.fromCartesian(cartesian);
+    const alt = this.viewer.scene.globe.getHeight(carto);
 
     return {
       lon: Math.round(Cesium.Math.toDegrees(carto.longitude) * 10e5) / 10e5,
@@ -347,18 +352,19 @@ class CesiumMap {
       alt: Math.round(alt * 10) / 10
     };
   }
+
   /**
-   * 缩放至点
-   * @param {Number[]} center
+   * 将center设为视角中心
+   * @param {Number[]} center 点坐标 [lon, lat, alt]
    * @param {Number} [duration=0] 动画时间
    * @param {Function} [success=()=>{}] 动画完成回调
    */
   zoomTo(center, duration = 0, success = () => {}) {
-    let opts = Tool.getCameraFlyToDegrees(center);
+    const opts = Tool.getCameraFlyToDegrees(center);
     opts.duration = duration;
-    // this.viewer.camera.flyTo(opts);
     ViewHelper.flyToView(this.viewer, opts, false, success);
   }
+
   /**
    * 设置天空盒
    * @param {Object} pictures 图片地址数组
@@ -372,6 +378,7 @@ class CesiumMap {
   setGroundSkybox(pictures) {
     this.viewer.scene.nearGroundSkyBox = Tool.generateSkybox(pictures);
   }
+
   /**
    * 设置天空盒参数
    * @param {Object} params
@@ -382,8 +389,8 @@ class CesiumMap {
    */
   setSkyboxParams(params) {
     if (this.viewer) {
-      this.viewer.scene.sun.show = params.sun ? true : false;
-      this.viewer.scene.moon.show = params.moon ? true : false;
+      this.viewer.scene.sun.show = !!params.sun;
+      this.viewer.scene.moon.show = !!params.moon;
       this.viewer.scene.nearGroundSkyBoxShowHeight = params.height;
       if (params.lightStrength !== this.viewer.scene.light.intensity) {
         this.viewer.scene.light.intensity = params.lightStrength;
@@ -392,14 +399,15 @@ class CesiumMap {
       }
     }
   }
+
   /**
-   * 设置（重新生成）底图
+   * 设置底图，这会移除之前的底图并重新生成
    * @param {Object|Object[]} mapConfig 底图配置
    * @param {String} mapConfig.url 底图地址
    * @param {String} [mapConfig.minimumLevel=0] 地图最小等级
    * @param {String} [mapConfig.maximumLevel=18] 地图最大等级
    * @param {String} [mapConfig.constructor=UrlTemplateImageryProvider] 采用的Cesium构造函数
-   * @param {Boolean} [removeAll=false] 是否移除之前的底图
+   * @param {Boolean} [removeAll=false] 是否移除所有图层（非底图也将移除）
    */
   setBasemap(mapConfig, removeAll = false) {
     const collection = this.viewer.imageryLayers;
@@ -413,7 +421,7 @@ class CesiumMap {
 
     const addmap = config => {
       const provider = Tool.generateBasemap(config);
-      const layer = this.viewer.imageryLayers.addImageryProvider(provider, 0);
+      layer = this.viewer.imageryLayers.addImageryProvider(provider, 0);
       layer.isBasemap = true;
     };
 
@@ -429,6 +437,7 @@ class CesiumMap {
 
     P.basemapParams = mapConfig;
   }
+
   /**
    * 设置底图参数
    * @param {*} params
@@ -461,6 +470,7 @@ class CesiumMap {
       P.basemapParams = params;
     }
   }
+
   /**
    * 设置是否下地
    * @param {Object} params
@@ -468,40 +478,35 @@ class CesiumMap {
    */
   setUnderground(params) {
     const scene = this.viewer.scene;
-    const isUnderground = params.isUnderground ? true : false;
+    const isUnderground = !!params.isUnderground;
     this.translucencyEnabled = isUnderground;
     scene.globe.translucency.enabled = isUnderground;
     // scene.pickTranslucentDepth = isUnderground;
     scene.screenSpaceCameraController.enableCollisionDetection = !isUnderground; // 相机是否下地
   }
+
   /**
    * 设置地形
    * @param {String} params
+   * @returns {czm-TerrainProvider} 可添加到viewer的TerrainProvider，若viewer已初始化将自动添加
    */
   setTerrain(params) {
     let terrainProvider;
-    const me = this;
     if (params === 'cesium') {
       terrainProvider = Cesium.createWorldTerrain();
-      // terrainProvider = new Cesium.CesiumTerrainProvider({
-      //   url: 'https://t3.tianditu.gov.cn/mapservice/swdx?T=elv_c&amp;tk=16db5f2b05abef1bc22c88924a318eb0'
-      // });
     } else if (params) {
       terrainProvider = new Cesium.CesiumTerrainProvider({
         url: params
       });
     } else terrainProvider = new Cesium.EllipsoidTerrainProvider();
 
-    // terrainProvider.errorEvent.addEventListener(error => {
-    //   console.error('地形加载出错，自动切换地形', error);
-    //   me.setTerrain('');
-    // }, this);
-
     if (this.viewer) this.viewer.terrainProvider = terrainProvider;
-    else return terrainProvider;
+
+    return terrainProvider;
   }
+
   /**
-   * 面北
+   * 使视角朝向正北
    * @param {Number} duration 动画时间
    */
   faceNorth(duration = 0) {
@@ -516,17 +521,19 @@ class CesiumMap {
       duration: duration
     });
   }
+
   /**
-   * 地理坐标获取高
+   * 地理坐标获取对应高度，使用了scene.sampleTerrainMostDetailed
    * @param {czm-Catographic[]} positions 地理坐标
    * @param {Array} [excluded=[]] 排除的对象
-   * @returns
+   * @returns {Promise&lt;czm-Cartographic[]>}
    */
   getHeight(positions, excluded = []) {
     return this.viewer.scene.sampleHeightMostDetailed(positions, excluded);
   }
+
   /**
-   * 获取鼠标点位置
+   * 获取鼠标点位置，当位置拾取模式为'scene'时，通过scene.pickPosition拾取，否则通过globe.pick拾取
    * @param {Object} {x:Number,y:Number} pos 屏幕坐标
    * @param {Object[]} [exclude=[]] 排除的对象
    * @returns {cczm-Cartesian3} 世界坐标
@@ -552,6 +559,7 @@ class CesiumMap {
     }
     return cartesian;
   }
+
   /**
    * 设置位置交互修改坐标拾取回调
    * @param {Function} callback 回调函数
@@ -565,6 +573,7 @@ class CesiumMap {
     this.viewer.scene.globe.translucency.enabled = false;
     if (showPointer) this.pickingPointer.show = true;
   }
+
   /**
    * 禁用位置拾取
    */
@@ -575,6 +584,10 @@ class CesiumMap {
     this.viewer.scene.globe.translucency.enabled = this.translucencyEnabled;
     this.pickingPointer.show = false;
   }
+
+  /**
+   * 销毁实例，将移除所有数据
+   */
   destroy() {
     if (this.waterSurface &amp;&amp; typeof this.waterSurface.destroy == 'function') this.waterSurface.destroy();
 
@@ -596,8 +609,9 @@ class CesiumMap {
     this.viewHelper = null;
 
     window._cesiummap = undefined;
-    console.log('viewer销毁');
+    console.log('_cesiummap销毁');
   }
+
   /**
    * 内部坐标拾取，供地图事件调用
    * @private
@@ -623,7 +637,7 @@ export default CesiumMap;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri May 05 2023 16:55:08 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat May 06 2023 11:13:35 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

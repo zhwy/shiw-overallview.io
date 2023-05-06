@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>layerType.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CesiumMap.html">CesiumMap</a><ul class='methods'><li data-type='method'><a href="CesiumMap.html#destroy">destroy</a></li><li data-type='method'><a href="CesiumMap.html#disablePositionPicking">disablePositionPicking</a></li><li data-type='method'><a href="CesiumMap.html#faceNorth">faceNorth</a></li><li data-type='method'><a href="CesiumMap.html#getCameraView">getCameraView</a></li><li data-type='method'><a href="CesiumMap.html#getHeight">getHeight</a></li><li data-type='method'><a href="CesiumMap.html#getPickPosition">getPickPosition</a></li><li data-type='method'><a href="CesiumMap.html#getWindowCenterPosition">getWindowCenterPosition</a></li><li data-type='method'><a href="CesiumMap.html#load3DTiles">load3DTiles</a></li><li data-type='method'><a href="CesiumMap.html#setBasemap">setBasemap</a></li><li data-type='method'><a href="CesiumMap.html#setBasemapParams">setBasemapParams</a></li><li data-type='method'><a href="CesiumMap.html#setGroundSkybox">setGroundSkybox</a></li><li data-type='method'><a href="CesiumMap.html#setSkyboxParams">setSkyboxParams</a></li><li data-type='method'><a href="CesiumMap.html#setTerrain">setTerrain</a></li><li data-type='method'><a href="CesiumMap.html#setUnderground">setUnderground</a></li><li data-type='method'><a href="CesiumMap.html#zoomTo">zoomTo</a></li></ul></li><li><a href="CesiumMap%25E5%259C%25B0%25E5%259B%25BE%25E7%25B1%25BB.html">CesiumMap地图类</a></li><li><a href="LayerManager.html">LayerManager</a><ul class='methods'><li data-type='method'><a href="LayerManager.html#addBillboardToLayer">addBillboardToLayer</a></li><li data-type='method'><a href="LayerManager.html#addLabelToLayer">addLabelToLayer</a></li><li data-type='method'><a href="LayerManager.html#addLayer">addLayer</a></li><li data-type='method'><a href="LayerManager.html#addModelLayer">addModelLayer</a></li><li data-type='method'><a href="LayerManager.html#addModelToLayer">addModelToLayer</a></li><li data-type='method'><a href="LayerManager.html#addVectorToLayer">addVectorToLayer</a></li><li data-type='method'><a href="LayerManager.html#destroy">destroy</a></li><li data-type='method'><a href="LayerManager.html#flickerItem">flickerItem</a></li><li data-type='method'><a href="LayerManager.html#getLayerVisible">getLayerVisible</a></li><li data-type='method'><a href="LayerManager.html#getTransformItem">getTransformItem</a></li><li data-type='method'><a href="LayerManager.html#playLayerLinkage">playLayerLinkage</a></li><li data-type='method'><a href="LayerManager.html#playSingleLinkage">playSingleLinkage</a></li><li data-type='method'><a href="LayerManager.html#playWaterFloodAnalysis">playWaterFloodAnalysis</a></li><li data-type='method'><a href="LayerManager.html#removeLayer">removeLayer</a></li><li data-type='method'><a href="LayerManager.html#setLayerVisibility">setLayerVisibility</a></li><li data-type='method'><a href="LayerManager.html#showLayer">showLayer</a></li><li data-type='method'><a href="LayerManager.html#stopFlyAndLinkage">stopFlyAndLinkage</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#BatchLayer">BatchLayer</a></li><li><a href="global.html#Default">Default</a></li><li><a href="global.html#FontType">FontType</a></li><li><a href="global.html#LayerType">LayerType</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">layerType.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Tool from './tool';
+
+/**
+ * 图层类型
+ * @enum {Number}
+ * @readonly
+ */
+const LayerType = {
+  /**
+   * 新建项目自动创建的默认图层
+   */
+  OverviewCollection: 0,
+  /**
+   * 视角图层
+   */
+  ViewCollection: 1,
+  /**
+   * 文字标签图层
+   */
+  LabelCollection: 2,
+  /**
+   * 图片标签图层
+   */
+  BillboardCollection: 3,
+  /**
+   * 矢量边界图层
+   */
+  VectorCollection: 4,
+  /**
+   * 模型图层
+   */
+  ModelCollection: 5,
+  /**
+   * 水面图层
+   */
+  WaterCollection: 6,
+  /**
+   * 流场图层
+   */
+  FlowFieldCollection: 7,
+  /**
+   * 地面裁剪图层
+   */
+  TerrainClippingCollection: 8,
+  /**
+   * 切片图层
+   */
+  TilesetCollection: 9,
+  /**
+   * 轨迹图层
+   */
+  TrackCollection: 10,
+  /**
+   * 地形编辑图层，测试中
+   */
+  TerrainEdittingCollection: 11,
+  /**
+   * 图层组
+   */
+  LayerGroupCollection: 99
+};
+
+/**
+ * 图层默认参数
+ * @type {Object}
+ * @property {Function} labelParams 文字标签默认参数
+ * @property {Function} billboardParams 图片标签默认参数
+ * @property {Function} vectorParams 矢量边界默认参数
+ * @property {Function} modelParams 模型默认参数
+ * @property {Function} waterParams 水面默认参数
+ * @property {Function} flowFieldParams 流场默认参数
+ * @property {Function} terrainClippingParams 地面裁剪默认参数
+ * @property {Function} tilesetParams 切片默认参数
+ * @property {Function} trackParams 轨迹默认参数
+ * @property {Function} terrainEdittingParams 地形编辑默认参数
+ * @readonly
+ */
+const Default = {
+  /**
+   * 获取文字标签默认参数
+   * @type {Function}
+   * @returns {Object} layerText
+   */
+  labelParams: () => {
+    return {
+      lon: 0,
+      lat: 0,
+      alt: 0,
+      font: 0,
+      size: 15,
+      fontColor: '#ffffff',
+      content: '',
+      bold: 0,
+      italic: 0,
+      isBorder: 0,
+      border: '#ff0000',
+      lineWidth: 1,
+      isBackground: 0,
+      background: '#00000077',
+      margin: 7,
+      minVisibleAlt: 0,
+      maxVisibleAlt: 10e5,
+      isGround: 1,
+      isLight: 1,
+      count: 0,
+      flashStart: 0,
+      batchText: [],
+      offsetX: 0,
+      offsetY: 0
+    };
+  },
+  /**
+   * 获取图片标签默认参数
+   * @type {Function}
+   * @returns {Object} layerLabel
+   */
+  billboardParams: () => {
+    return {
+      lon: 0,
+      lat: 0,
+      alt: 0,
+      size: 1,
+      color: '#ffffff',
+      rotate: 0,
+      minVisibleAlt: 0,
+      maxVisibleAlt: 10e5,
+      transparency: 1,
+      isGround: 1,
+      isLight: 1,
+      count: 0,
+      flashStart: 0,
+      batchLabel: [],
+      offsetX: 0,
+      offsetY: 0
+    };
+  },
+  /**
+   * 获取矢量边界默认参数
+   * @type {Function}
+   * @returns {Object} layerBorder
+   */
+  vectorParams: () => {
+    return {
+      name: '边界名称',
+      color: '#ffffff77',
+      borderSize: 5,
+      borderColor: '#ffff00ff',
+      isDottedLine: 0,
+      dottedLineInterval: 16,
+      intervalColor: '#00ffff77',
+      alt: 0,
+      minVisibleAlt: 0,
+      maxVisibleAlt: 10e5,
+      image: '',
+      borderType: 1, // 0:面,1:无填充的线,
+      isRepeat: 0,
+      isGround: 1,
+      coordinate: [],
+      batchCoordinate: [],
+      isLight: 1,
+      count: 0,
+      flashStart: 0
+    };
+  },
+  /**
+   * 获取模型默认参数
+   * @type {Function}
+   * @returns {Object} layerModel
+   */
+  modelParams: () => {
+    return {
+      lon: 0,
+      lat: 0,
+      alt: 0,
+      zoom: 1,
+      color: '#ffffffff',
+      name: '模型名称',
+      url: '',
+      heading: 0,
+      pitch: 0,
+      roll: 0,
+      minVisibleAlt: 0,
+      maxVisibleAlt: 10e5,
+      isGround: 1,
+      isLight: 1,
+      count: 0,
+      flashStart: 0,
+      batchModel: []
+    };
+  },
+  /**
+   * 获取水面默认参数
+   * @type {Function}
+   * @returns {Object} layerWater
+   */
+  waterParams: () => {
+    return {
+      frequency: 100.0,
+      animationSpeed: 0.01,
+      amplitude: 5,
+      specularIntensity: 0.5,
+      fadeFactor: 0.3,
+      name: '水面',
+      color: '#134f9cff',
+      borderSize: 0,
+      borderColor: '#ffff0000',
+      isDottedLine: 0,
+      dottedLineInterval: 16,
+      intervalColor: '#00ffff77',
+      alt: 0,
+      minVisibleAlt: 0,
+      maxVisibleAlt: 10e5,
+      isGround: 1,
+      coordinate: [],
+      isLight: 1,
+      count: 0,
+      flashStart: 0,
+      batchCoordinate: [],
+      borderType: 1,
+      floodAnalysisCheck: 0,
+      analysisBeginHeight: 0,
+      analysisEndHeight: 10,
+      analysisDuration: 5
+    };
+  },
+  /**
+   * 获取流场默认参数
+   * @type {Function}
+   * @returns {Object} layerFlowField
+   */
+  flowFieldParams: () => {
+    return {
+      name: '请选择文件',
+      color: '#ffffffff',
+      alt: 0,
+      borderSize: 2,
+      borderColor: '#ffffffff',
+      isDottedLine: 0,
+      dottedLineInterval: 16,
+      intervalColor: '#00ffff77',
+      minVisibleAlt: 0,
+      maxVisibleAlt: 10e5,
+      flowType: 0,
+      isGround: 1,
+      coordinate: [],
+      isLight: 1,
+      count: 0,
+      flashStart: 0,
+      imgRotation: 0,
+      speed: 10,
+      path: ''
+    };
+  },
+  /**
+   * 获取地形裁剪默认参数
+   * @type {Function}
+   * @returns {Object} layerTerrainClipping
+   */
+  terrainClippingParams: () => {
+    return {
+      name: '地形裁剪名称',
+      color: '#ffffff77',
+      borderSize: 5,
+      borderColor: '#ffff0000',
+      isDottedLine: 0,
+      dottedLineInterval: 16,
+      intervalColor: '#00ffff77',
+      alt: 0,
+      minVisibleAlt: 0,
+      maxVisibleAlt: 10e5,
+      image: '',
+      borderType: 1, // 0:面,1:无填充的线,
+      isRepeat: 0,
+      isGround: 2,
+      coordinate: [],
+      batchCoordinate: [],
+      isLight: 1,
+      count: 0,
+      flashStart: 0
+    };
+  },
+  /**
+   * 获取切片默认参数
+   * @type {Function}
+   * @returns {Object} layerTileset
+   */
+  tilesetParams: () => {
+    return {
+      name: '切片名称',
+      url: '',
+      heading: 0,
+      pitch: 0,
+      roll: 0,
+      isLight: 1,
+      count: 0,
+      flashStart: 0,
+      zoom: 1,
+      color: '#ffffffff',
+      minVisibleAlt: 0,
+      maxVisibleAlt: 10e5,
+      isGround: 0
+    };
+  },
+  /**
+   * 获取轨迹默认参数
+   * @type {Function}
+   * @returns {Object} layerTrack
+   */
+  trackParams: () => {
+    return {
+      name: '轨迹名称',
+      borderSize: 5,
+      borderColor: '#ffff00ff',
+      isDottedLine: 0,
+      dottedLineInterval: 16,
+      intervalColor: '#00ffff77',
+      alt: 0,
+      minVisibleAlt: 0,
+      maxVisibleAlt: 10e5,
+      isRepeat: 0,
+      isGround: 1,
+      coordinate: [],
+      isLight: 1,
+      count: 0,
+      flashStart: 0,
+      startTime: new Date('2000/1/1').getTime(),
+      isTrail: 0,
+      leadTime: 0,
+      trailTime: 3600,
+      relatedTo: null,
+      totalTime: 0
+    };
+  },
+  /**
+   * 获取地形裁剪参数
+   * @type {Function}
+   * @returns {Object} layerTerrainEditting
+   */
+  terrainEdittingParams: () => {
+    return {
+      name: '地形修改',
+      batchCoordinate: []
+    };
+  }
+};
+
+/**
+ * 字体类型字典
+ * @property {Number} 0 Sans-serif
+ * @property {Number} 1 Microsoft Yahei
+ * @property {Number} 2 SimHei
+ * @property {Number} 3 SimSun
+ * @property {Number} 4 KaiTi
+ * @property {Number} 5 FangSong
+ */
+const FontType = {
+  0: 'Sans-serif',
+  1: 'Microsoft Yahei',
+  2: 'SimHei',
+  3: 'SimSun',
+  4: 'KaiTi',
+  5: 'FangSong'
+};
+
+/**
+ * 批量图层默认参数
+ * @type {Object}
+ * @property {Function} batchVector 获取批量矢量参数
+ * @property {Function} batchLabel 获取批量文字标签参数
+ * @property {Function} batchWater 获取批量水面参数
+ * @property {Function} batchModel 获取批量模型参数
+ * @property {Function} batchBillboard 获取批量图片标签参数
+ */
+const BatchLayer = {
+  /**
+   * 获取批量矢量图层参数
+   * @param {Object} param
+   * @param {String} param.name 图层名称
+   * @param {String} param.code 项目编号
+   * @param {String} param.parentId 父节点id
+   * @param {Number} param.sort 排序
+   * @returns {Object} layerBorder
+   */
+  batchVector: ({ name, code, parentId, sort }) => {
+    let layerBorder = Default.vectorParams();
+    layerBorder = {
+      ...layerBorder,
+      ...{
+        name: name,
+        layerId: '00000000-0000-0000-0000-000000000000',
+        borderSize: 3,
+        borderColor: Tool.randomColor(),
+        borderType: 1,
+        isGround: 2,
+        remark: name
+      }
+    };
+    return {
+      id: '00000000-0000-0000-0000-000000000000',
+      name: name,
+      type: LayerType.VectorCollection,
+      check: 1,
+      code: code,
+      sort: sort,
+      canDelete: true,
+      checkbox: true,
+      children: [],
+      layerViews: [],
+      isBatch: 1,
+      parentId: parentId,
+      layerBorder: layerBorder,
+      layerText: null,
+      layerLabel: null
+    };
+  },
+  /**
+   * 获取批量文字标签参数
+   * @param {Object} param
+   * @param {String} param.name 图层名称
+   * @param {String} param.code 项目编号
+   * @param {String} param.parentId 父节点id
+   * @param {Number} param.sort 排序
+   * @param {String} param.content 文字内容
+   * @returns {Object} layerLabel
+   */
+  batchLabel: ({ name, code, parentId, sort, content = '' }) => {
+    let layerText = Default.labelParams();
+    layerText = {
+      ...layerText,
+      ...{
+        content: content,
+        layerId: '00000000-0000-0000-0000-000000000000',
+        isGround: 2,
+        remark: content
+      }
+    };
+    return {
+      id: '00000000-0000-0000-0000-000000000000',
+      name: name,
+      type: LayerType.LabelCollection,
+      check: 1,
+      code: code,
+      sort: sort,
+      canDelete: true,
+      checkbox: true,
+      children: [],
+      layerViews: [],
+      isBatch: 1,
+      parentId: parentId,
+      layerText: layerText
+    };
+  },
+  /**
+   * 获取批量水面参数
+   * @param {Object} param
+   * @param {String} param.name 图层名称
+   * @param {String} param.code 项目编号
+   * @param {String} param.parentId 父节点id
+   * @param {Number} param.sort 排序
+   * @returns {Object} layerWater
+   */
+  batchWater: ({ name, code, parentId, sort }) => {
+    let layerWaterSurface = Default.waterParams();
+    layerWaterSurface = {
+      ...layerWaterSurface,
+      ...{
+        name: name,
+        layerId: '00000000-0000-0000-0000-000000000000',
+        borderSize: 0,
+        borderColor: Tool.randomColor(),
+        isGround: 2,
+        remark: name
+      }
+    };
+    return {
+      id: '00000000-0000-0000-0000-000000000000',
+      name: name,
+      type: LayerType.WaterCollection,
+      check: 1,
+      code: code,
+      sort: sort,
+      canDelete: true,
+      checkbox: true,
+      children: [],
+      layerViews: [],
+      isBatch: 1,
+      parentId: parentId,
+      layerWaterSurface: layerWaterSurface
+    };
+  },
+  /**
+   * 获取批量模型参数
+   * @param {Object} param
+   * @param {String} param.name 图层名称
+   * @param {String} param.code 项目编号
+   * @param {String} param.parentId 父节点id
+   * @param {Number} param.sort 排序
+   * @param {String} param.url 模型地址
+   * @returns {Object} layerModel
+   */
+  batchModel: ({ name, code, parentId, sort, url }) => {
+    let layerModel = Default.modelParams();
+    layerModel = {
+      ...layerModel,
+      ...{
+        name: name,
+        layerId: '00000000-0000-0000-0000-000000000000',
+        isGround: 2,
+        url: url
+      }
+    };
+    return {
+      id: '00000000-0000-0000-0000-000000000000',
+      name: name,
+      type: LayerType.ModelCollection,
+      check: 1,
+      code: code,
+      sort: sort,
+      canDelete: true,
+      checkbox: true,
+      children: [],
+      layerViews: [],
+      isBatch: 1,
+      parentId: parentId,
+      layerModel: layerModel
+    };
+  },
+  /**
+   * 获取批量图片标签参数
+   * @param {Object} param
+   * @param {String} param.name 图层名称
+   * @param {String} param.code 项目编号
+   * @param {String} param.parentId 父节点id
+   * @param {Number} param.sort 排序
+   * @param {String} param.labelId 标签id
+   * @returns {Object} layerBillboard
+   */
+  batchBillboard: ({ name, code, parentId, sort, labelId }) => {
+    let layerLabel = Default.billboardParams();
+    layerLabel = {
+      ...layerLabel,
+      ...{
+        name: name,
+        layerId: '00000000-0000-0000-0000-000000000000',
+        isGround: 2,
+        labelId: labelId
+      }
+    };
+    return {
+      id: '00000000-0000-0000-0000-000000000000',
+      name: name,
+      type: LayerType.BillboardCollection,
+      check: 1,
+      code: code,
+      sort: sort,
+      canDelete: true,
+      checkbox: true,
+      children: [],
+      layerViews: [],
+      isBatch: 1,
+      parentId: parentId,
+      layerLabel: layerLabel
+    };
+  }
+};
+
+export { LayerType, Default, FontType, BatchLayer };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat May 06 2023 11:13:35 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
